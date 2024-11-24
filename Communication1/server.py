@@ -1,40 +1,34 @@
 import socket
 import threading
-import rsa  # Lightweight built-in RSA module for Python
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+import binascii
+
+# Generate RSA key pair (Kade's code integration)
+keyPair = RSA.generate(3072)
+pubKey = keyPair.publickey()
+pubKeyPEM = pubKey.exportKey()
+privKeyPEM = keyPair.exportKey()
 
 # Server Configuration
 HOST = '127.0.0.1'
 PORT = 65432
 
-# Generate RSA Key Pair
-(public_key, private_key) = rsa.newkeys(2048)
 
-
-# Function to handle each client
 def handle_client(conn, addr):
     try:
         print(f"Connected by {addr}")
 
-        # Step 1: Send the server's public key
-        conn.send(public_key.save_pkcs1())
+        # Send the server's public key to the client
+        conn.sendall(pubKeyPEM)
+        print(f"Public key sent to {addr}.")
 
-        # Step 2: Receive AES key encrypted with RSA
-        encrypted_aes_key = conn.recv(256)
-        aes_key = rsa.decrypt(encrypted_aes_key, private_key)
-        print(f"Received AES key from {addr}")
+        # Receive the encrypted message
+        encrypted_message = conn.recv(1024)
+        print(f"Encrypted message from {addr}: {binascii.hexlify(encrypted_message)}")
 
-        # Step 3: Handle encrypted communication
-        while True:
-            encrypted_message = conn.recv(1024)
-            if not encrypted_message:
-                break
-            # Decrypt message
-            message = decrypt_message(encrypted_message, aes_key)
-            print(f"Message from {addr}: {message}")
-
-            # Encrypt acknowledgment
-            encrypted_response = encrypt_message("Message received.", aes_key)
-            conn.sendall(encrypted_response)
+        # For demonstration, the server will NOT decrypt the message
+        print("Server does not have access to decrypt the message (as per leader's request).")
     except Exception as e:
         print(f"Error with {addr}: {e}")
     finally:
@@ -42,17 +36,6 @@ def handle_client(conn, addr):
         print(f"Connection with {addr} closed.")
 
 
-# Encrypt message using AES (simple XOR for demonstration)
-def encrypt_message(message, aes_key):
-    return bytes([b ^ aes_key[i % len(aes_key)] for i, b in enumerate(message.encode())])
-
-
-# Decrypt message using AES (simple XOR for demonstration)
-def decrypt_message(encrypted_message, aes_key):
-    return ''.join(chr(b ^ aes_key[i % len(aes_key)]) for i, b in enumerate(encrypted_message))
-
-
-# Start the server
 def start_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((HOST, PORT))
