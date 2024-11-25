@@ -1,45 +1,26 @@
-### CSCI663 - Introduction to Cryptography
+### INF601 - Advanced Programming in Python
 ### Steve Valles
 ### Final Project
 
-
-# Secure Client-Server Communication 
-
-
+# Secure Communication Using RSA Encryption
 
 ## Description
-This project implements a secure communication system between a client and server using Python. It incorporates RSA for secure key exchange and basic XOR-based encryption for symmetric communication. The server is capable of handling multiple clients simultaneously through multithreading. 
+This project demonstrates secure client-server communication using RSA encryption. The client sends encrypted messages to the server, which can process the messages without decrypting them for demonstration purposes. The server acknowledges receipt of the encrypted data.
 
 ## Getting Started
-I have created two options for the group, one that uses the `pycryptodome` library, allowing for stronger AES encryption and another that does not use said library. For Communication2(the one that makes use of `pycryptodome` library), the files crypto_utils.py and init.py located on Crypto directory are needed. For Communication1, this files have to be ignored. For the rest of the README file there will be instructions for both, once decided which one to keep, delete the other one.
-### Dependencies
-COMMUNICATION1
-- Python 3.x  
-- rsa library for key generation and encryption:  
-  pip install rsa  
 
-COMMUNICATION2 
-- Python 3.8+  
-- `pycryptodome` library for cryptographic operations. 
+### Dependencies
+This project requires Python 3.x and the following library:
+- `pycryptodome`
+
+To install the dependency, run:
+```
+pip install pycryptodome
+```
 
 ### Installing
 
-```
-pip install -r requirements. txt
-```
-
-### Executing program
-
-* Start the server:  
-  python server.py (This will launch the server to listen for client connections.)  
-
-* Start the client:  
-  python client.py (This will launch the client to connect to the server.)  
-
-* Enter a message in the client terminal to send it to the server. The server will respond with an acknowledgment.  
-
-* To exit the client, type quit.
-
+Ensure that `client.py` and `server.py` are in the same directory or a structured folder (e.g., `/communication/`).
 
 
 ## License
@@ -53,6 +34,4 @@ COMMUNICATION 1
 COMMUNICATION 2
 Inspiration, code snippets, etc.
 * [pycryptodome documentation](https://www.pycryptodome.org/)
-* [Python socket programming tutorial](https://realpython.com/python-sockets/)
-* [Multithreading in Python](https://docs.python.org/3/library/threading.html)
 
